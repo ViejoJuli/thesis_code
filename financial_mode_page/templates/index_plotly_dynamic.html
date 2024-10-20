@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Plotly Chart</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Formulario para ingresar los valores -->
+    <form id="form-params">
+        <label for="months_range">Months Range:</label>
+        <input type="number" id="months_range" name="months_range" value="{{ default_months }}" min="1" required>
+
+        <label for="discount_rate">Discount Rate:</label>
+        <input type="number" id="discount_rate" name="discount_rate" step="0.0001" value="{{ default_interest }}"
+            min="0" required>
+
+        <button type="submit">Update Plot</button>
+    </form>
+
+    <!-- Contenedor del gráfico -->
+    <div id="plotly-chart"></div>
+
+    <!-- JavaScript para manejar el envío del formulario y actualizar el gráfico -->
+    <script>
+        document.getElementById('form-params').addEventListener('submit', function (event) {
+            event.preventDefault();  // Prevenir el envío del formulario tradicional
+
+            // Obtener los datos del formulario
+            const monthsRange = document.getElementById('months_range').value;
+            const discountRate = document.getElementById('discount_rate').value;
+
+            // Enviar los datos mediante Fetch al servidor
+            fetch('/update_plot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `months_range=${monthsRange}&discount_rate=${discountRate}`
+            })
+                .then(response => response.json())  // Parsear el JSON de la respuesta
+                .then(graph_json => {
+                    // Asegurarse de parsear el JSON correctamente para Plotly
+                    const graph = JSON.parse(graph_json);
+                    // Actualizar el gráfico con los nuevos datos
+                    Plotly.react('plotly-chart', graph.data, graph.layout);
+                })
+                .catch(error => {
+                    console.error('Error al actualizar el gráfico:', error);
+                });
+        });
+
+        // Cargar el gráfico inicial al cargar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            // Obtener el gráfico inicial desde el servidor
+            const initialGraph = JSON.parse('{{ graph_json | safe }}');
+            // Dibujar el gráfico inicial
+            Plotly.newPlot('plotly-chart', initialGraph.data, initialGraph.layout);
+        });
+    </script>
+
+</body>
+
+</html>
