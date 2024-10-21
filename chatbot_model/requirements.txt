@@ -1,0 +1,7 @@
+streamlit
+python-dotenv
+pyodbc
+pysentimiento
+langchain_openai
+langchain_openai
+langchain_pinecone

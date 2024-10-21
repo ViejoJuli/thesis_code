@@ -2,8 +2,8 @@
 
 from flask import Flask, render_template, request, jsonify
 from plotly.graph_objs import Figure, Scatter, Layout
-from functions_2 import *
-import global_variables_2 as gv
+from functions import *
+import global_variables as gv
 
 app = Flask(__name__)
 

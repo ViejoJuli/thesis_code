@@ -27,6 +27,7 @@ avg_interactions_per_contact = 5
 enginner_cost = 75  # per hour
 native_implementation_time = 20
 comercial_implementation_time = 5
+betha = 2
 
 # Calculated Variables
 cost_prompt_gpt4_usd = (num_tokens_input * gpt4_in_token) + \

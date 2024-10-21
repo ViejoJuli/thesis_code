@@ -6,3 +6,4 @@ matplotlib
 kaleido
 panel 
 watchfiles
+langchain_community

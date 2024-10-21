@@ -1,4 +1,4 @@
-from global_variables_2 import *
+from global_variables import *
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from plotly.graph_objs import Figure, Scatter, Layout

@@ -22,8 +22,7 @@ load_dotenv()
 
 def summary_query(payload):
     API_URL = "https://api-inference.huggingface.co/models/mrm8488/bert2bert_shared-spanish-finetuned-summarization"
-    headers = {"Authorization": f"Bearer {
-        os.environ['HUGGINGFACEHUB_API_TOKEN']}"}
+    headers = {"Authorization": f"Bearer {os.environ['HUGGINGFACEHUB_API_TOKEN']}"}
     response = requests.post(API_URL, headers=headers, json=payload)
     return response.json()
 
@@ -36,8 +35,7 @@ with st.sidebar:
     st.title(f'{company_name} Chatbot')
 
     # Concise and clear description
-    st.markdown(f"Este es un chatbot diseñado para responder las preguntar al respecto de {
-                company_name}")
+    st.markdown(f"Este es un chatbot diseñado para responder las preguntar al respecto de {company_name}")
 
     st.write("---")
 
@@ -113,8 +111,8 @@ def main():
     # Initialize chat history
     if "messages" not in st.session_state:
         st.session_state.messages = []
-        st.session_state.messages.append({"role": "assistant", "content": f"Bienvenido al chat de {
-            company_name}, soy su asistente virtual, en que le puedo ayudar el día de hoy?"})
+        st.session_state.messages.append({"role": "assistant", "content": f"Bienvenido al chat de {company_name},\
+                                           soy su asistente virtual, en que le puedo ayudar el día de hoy?"})
 
     # Initialize costs
     if 'costs' not in st.session_state:
