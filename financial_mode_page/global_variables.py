@@ -27,13 +27,17 @@ avg_interactions_per_contact = 5
 enginner_cost = 75  # per hour
 native_implementation_time = 20
 comercial_implementation_time = 5
-betha = 2
+
+
+betha = 2  # Valor por defecto
+
 
 # Calculated Variables
 cost_prompt_gpt4_usd = (num_tokens_input * gpt4_in_token) + \
     (num_tokens_output * gpt4_out_token)
-cost_prompt_gpt4_cop = cost_prompt_gpt4_usd * \
-    dolar * avg_interactions_per_contact
+def get_cost_prompt_gpt4_cop():
+    return cost_prompt_gpt4_usd * dolar * avg_interactions_per_contact * betha
+
 cost_prompt_gpt3_usd = (num_tokens_input * gpt3_in_token) + \
     (num_tokens_output * gpt3_out_token)
 cost_prompt_gpt3_cop = cost_prompt_gpt3_usd * \

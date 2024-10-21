@@ -10,6 +10,15 @@
 
 <body>
 
+    <!-- Cuadro de instrucciones -->
+    <div id="instructions" style="border: 1px solid #ddd; padding: 10px; margin-bottom: 20px; background-color: #f9f9f9;">
+        <h3>Instrucciones:</h3>
+        <p>
+            Este modelo permite actualizar un gráfico interactivo en base a tres parámetros: el rango de meses, la tasa de descuento y el valor de beta.
+            Ingresa los valores en los campos correspondientes y presiona "Update Plot" para visualizar los resultados actualizados en el gráfico.
+        </p>
+    </div>
+
     <!-- Formulario para ingresar los valores -->
     <form id="form-params">
         <label for="months_range">Months Range:</label>
@@ -19,11 +28,18 @@
         <input type="number" id="discount_rate" name="discount_rate" step="0.0001" value="{{ default_interest }}"
             min="0" required>
 
+        <!-- Nuevo campo para la variable betha -->
+        <label for="betha">Betha:</label>
+        <input type="number" id="betha" name="betha" step="0.0001" value="{{ default_betha }}" required>
+
         <button type="submit">Update Plot</button>
     </form>
 
     <!-- Contenedor del gráfico -->
     <div id="plotly-chart"></div>
+
+    <!-- Campo donde se mostrará el costo actualizado -->
+    <p id="cost-prompt-gpt4">Costo actualizado por sesión: {{ default_cost_prompt_gpt4_cop }}</p>
 
     <!-- JavaScript para manejar el envío del formulario y actualizar el gráfico -->
     <script>
@@ -33,6 +49,7 @@
             // Obtener los datos del formulario
             const monthsRange = document.getElementById('months_range').value;
             const discountRate = document.getElementById('discount_rate').value;
+            const betha = document.getElementById('betha').value;
 
             // Enviar los datos mediante Fetch al servidor
             fetch('/update_plot', {
@@ -40,18 +57,21 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `months_range=${monthsRange}&discount_rate=${discountRate}`
+                body: `months_range=${monthsRange}&discount_rate=${discountRate}&betha=${betha}`  // Incluir betha
             })
-                .then(response => response.json())  // Parsear el JSON de la respuesta
-                .then(graph_json => {
-                    // Asegurarse de parsear el JSON correctamente para Plotly
-                    const graph = JSON.parse(graph_json);
-                    // Actualizar el gráfico con los nuevos datos
-                    Plotly.react('plotly-chart', graph.data, graph.layout);
-                })
-                .catch(error => {
-                    console.error('Error al actualizar el gráfico:', error);
-                });
+            .then(response => response.json())  // Parsear el JSON de la respuesta
+            .then(data => {
+                // Asegurarse de parsear el JSON correctamente para Plotly
+                const graph = JSON.parse(data.graph_json);
+                // Actualizar el gráfico con los nuevos datos
+                Plotly.react('plotly-chart', graph.data, graph.layout);
+
+                // Actualizar el costo de GPT-4 (COP) en la página
+                document.getElementById('cost-prompt-gpt4').textContent = `Costo actualizado: ${data.updated_cost.toFixed(2)} COP`;
+            })
+            .catch(error => {
+                console.error('Error al actualizar el gráfico:', error);
+            });
         });
 
         // Cargar el gráfico inicial al cargar la página

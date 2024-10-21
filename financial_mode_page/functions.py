@@ -106,7 +106,7 @@ def calculate_vpn_gpt4(months, discount_rate):
         total_contacts_month = ((month_contacts(contacts_per_month, contacts_annual_growth, month))
                                 + ((month_users(active_users, users_annual_growth, month)-active_users)*users_that_contact_ratio*avg_contacts_per_user))
 
-        cost_interactions_gpt4 = -(total_contacts_month * cost_prompt_gpt4_cop) * (
+        cost_interactions_gpt4 = -(total_contacts_month * get_cost_prompt_gpt4_cop()) * (
             # interactions * increase in cost
             (1+api_costs_growth)**(month//12))
 
