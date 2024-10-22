@@ -359,7 +359,7 @@ def generate_plot(months_range, discount_rate):
         title="Comparación VPNs Nativo, Comercial (GPT4) y Call Center",
         title_x=0.5,
         xaxis_title="Meses",
-        yaxis_title="VPN",
+        yaxis_title="VPN (COP)",
         legend_title="VPN Escenarios",
         width=1200,  # Adjust width
         height=600,  # Adjust height to make it square
