@@ -21,16 +21,18 @@
 
     <!-- Formulario para ingresar los valores -->
     <form id="form-params">
-        <label for="months_range">Months Range:</label>
+        <label for="months_range">Meses</label>
         <input type="number" id="months_range" name="months_range" value="{{ default_months }}" min="1" required>
 
-        <label for="discount_rate">Discount Rate:</label>
+        <label for="discount_rate">Tasa de Interes (Anual):</label>
         <input type="number" id="discount_rate" name="discount_rate" step="0.0001" value="{{ default_interest }}"
             min="0" required>
 
-        <!-- Nuevo campo para la variable betha -->
         <label for="betha">Betha:</label>
         <input type="number" id="betha" name="betha" step="0.0001" value="{{ default_betha }}" required>
+
+        <label for="active_users">Usuarios Activos</label>
+        <input type="number" id="active_users" name="active_users" step="1000" value="{{ default_active_users }}" required>
 
         <button type="submit">Update Plot</button>
     </form>
@@ -50,6 +52,7 @@
             const monthsRange = document.getElementById('months_range').value;
             const discountRate = document.getElementById('discount_rate').value;
             const betha = document.getElementById('betha').value;
+            const active_users = document.getElementById('active_users').value;
 
             // Enviar los datos mediante Fetch al servidor
             fetch('/update_plot', {
@@ -57,7 +60,7 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `months_range=${monthsRange}&discount_rate=${discountRate}&betha=${betha}`  // Incluir betha
+                body: `months_range=${monthsRange}&discount_rate=${discountRate}&betha=${betha}&active_users=${active_users}`
             })
             .then(response => response.json())  // Parsear el JSON de la respuesta
             .then(data => {

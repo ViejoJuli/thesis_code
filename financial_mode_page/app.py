@@ -17,25 +17,30 @@ def home():
                            default_months=gv.model_months,
                            default_interest=gv.annual_interest_rate, 
                            default_betha=gv.betha, 
-                           default_cost_prompt_gpt4_cop=gv.get_cost_prompt_gpt4_cop())
+                           default_cost_prompt_gpt4_cop=gv.get_cost_prompt_gpt4_cop(),
+                           default_active_users=gv.get_active_users())
 
 
 @app.route('/update_plot', methods=['POST'])
 def update_plot():
+    print(request.form)
     # Obtener los datos del formulario
     months_range = int(request.form['months_range'])
     discount_rate = float(request.form['discount_rate'])
     betha = float(request.form['betha'])
+    active_users = int(request.form['active_users'])
+    
 
-    print(months_range, discount_rate)
 
     # Actualizar las variables globales con los valores recibidos del formulario
     gv.model_months = months_range
     gv.annual_interest_rate = discount_rate
     gv.betha = betha
+    gv.active_users = active_users
 
     # Calcular el nuevo costo actualizado
     updated_cost = gv.get_cost_prompt_gpt4_cop()
+    print(gv.active_users)
 
     # Generar el gráfico actualizado
     fig = generate_plot(gv.model_months, gv.get_monthly_interest_rate())

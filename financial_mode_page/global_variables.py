@@ -19,6 +19,10 @@ db_cost = 50
 
 # Use Case
 active_users = 594000
+def get_active_users():
+    global active_users
+    return active_users
+
 contacts_per_month = 9345
 dolar = 4300  # Remember to change to 3900
 num_tokens_input = 800
@@ -29,7 +33,9 @@ native_implementation_time = 20
 comercial_implementation_time = 5
 
 
-betha = 2  # Valor por defecto
+betha = 1  # Valor por defecto
+alpha_gpt3 = 1.23
+
 
 
 # Calculated Variables
@@ -41,7 +47,7 @@ def get_cost_prompt_gpt4_cop():
 cost_prompt_gpt3_usd = (num_tokens_input * gpt3_in_token) + \
     (num_tokens_output * gpt3_out_token)
 cost_prompt_gpt3_cop = cost_prompt_gpt3_usd * \
-    dolar * avg_interactions_per_contact
+    dolar * avg_interactions_per_contact * alpha_gpt3
 
 
 # Callcenter Variables - Use getters for calculated values
