@@ -104,7 +104,7 @@ def calculate_vpn_gpt4(months, discount_rate):
     for month in range(1, months + 1):
         # Cost interaction
         total_contacts_month = ((month_contacts(contacts_per_month, contacts_annual_growth, month))
-                                + ((month_users(get_active_users(), users_annual_growth, month)-get_active_users())*users_that_contact_ratio*avg_contacts_per_user))
+                                + ((month_users(get_active_users(), users_annual_growth, month)-get_active_users())*get_users_that_contact_ratio()*avg_contacts_per_user))
 
         cost_interactions_gpt4 = -(total_contacts_month * get_cost_prompt_gpt4_cop()) * (
             # interactions * increase in cost
@@ -143,9 +143,9 @@ def calculate_vpn_gpt3(months, discount_rate):
     for month in range(1, months + 1):
         # Cost interaction
         total_contacts_month = ((month_contacts(contacts_per_month, contacts_annual_growth, month))
-                                + ((month_users(get_active_users(), users_annual_growth, month)-get_active_users())*users_that_contact_ratio*avg_contacts_per_user))
+                                + ((month_users(get_active_users(), users_annual_growth, month)-get_active_users())*get_users_that_contact_ratio()*avg_contacts_per_user))
 
-        cost_interactions_gpt3 = -(total_contacts_month * cost_prompt_gpt3_cop) * (
+        cost_interactions_gpt3 = -(total_contacts_month * get_cost_prompt_gpt3_cop()) * (
             # interactions * increase in cost
             (1+api_costs_growth)**(month//12))
 
@@ -347,20 +347,22 @@ def generate_plot(months_range, discount_rate):
     fig.add_trace(Scatter(x=list(range(1, months_range + 1)),
                   y=vpns["commercial_3"], name="VPN Comercial (GPT3.5)"))
     fig.add_trace(Scatter(x=list(range(1, months_range + 1)),
-                  y=vpns["callcenter"], name="Call Center VPN"))
+                  y=vpns["callcenter"], name="VPN Call Center"))
 
     if equal_month:
         fig.add_trace(Scatter(x=[equal_month], y=[vpns["native"][equal_month - 1]], mode='markers',
-                      marker=dict(color='red', size=10, symbol='x'), name="Mes VPN Igual"))
+                      marker=dict(color='red', size=10, symbol='x'), name="Mes VPN Igual GPT4/Nativo"))
         fig.add_annotation(
             x=equal_month, y=vpns["native"][equal_month - 1] + 10, text=f"Mes {equal_month}", showarrow=False)
 
     fig.update_layout(
         title="Comparación VPNs Nativo, Comercial (GPT4) y Call Center",
         title_x=0.5,
-        xaxis_title="Months",
+        xaxis_title="Meses",
         yaxis_title="VPN",
-        legend_title="VPN Scenarios"
+        legend_title="VPN Escenarios",
+        width=1200,  # Adjust width
+        height=600,  # Adjust height to make it square
     )
 
     return fig

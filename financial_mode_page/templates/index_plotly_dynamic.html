@@ -6,42 +6,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Plotly Chart</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
 <body>
 
-    <!-- Cuadro de instrucciones -->
-    <div id="instructions" style="border: 1px solid #ddd; padding: 10px; margin-bottom: 20px; background-color: #f9f9f9;">
-        <h3>Instrucciones:</h3>
-        <p>
-            Este modelo permite actualizar un gráfico interactivo en base a tres parámetros: el rango de meses, la tasa de descuento y el valor de beta.
-            Ingresa los valores en los campos correspondientes y presiona "Update Plot" para visualizar los resultados actualizados en el gráfico.
-        </p>
+    <!-- Contenedor para el layout de dos columnas -->
+    <div class="container">
+        <!-- Cuadro de parámetros a la izquierda -->
+        <div class="left-panel">
+            <!-- Cuadro de instrucciones -->
+            <div id="instructions">
+                <h3>📊 Modelo Financiero para comparar alternativas</h3>
+                <p>
+                    Este modelo permite actualizar un gráfico interactivo en base a los siguientes parámetros:
+                </p>    
+                <ul>
+                    <li><strong>Rango:</strong> meses para el que se quiere hacer la proyección.</li>
+                    <li><strong>Tasa de Interés:</strong> tasa de descuento anual con la que se quiere hacer la proyección.</li>
+                    <li><strong>Beta:</strong> corresponde al múltiplicador de interacciones que puede llegar a tener el usuario, fijado en 5 interacciones por sesión.</li>
+                    <li><strong>Usuarios:</strong> número total de usuarios con lo que se cuenta.</li>
+                    <li><strong>Ratio de Uso:</strong> proporción de usuarios que utilizan mensualmente el servicio al cliente.</li>
+                </ul>
+                <p>
+                    Ingresa los valores en los campos correspondientes y presiona "Actualizar Gráfico" para visualizar los resultados actualizados.
+                </p>
+                <p>
+                    Puedes encontrar el código fuente de este proyecto, y el trabajo de investigación con los supuestos del modelo en <a href="https://github.com/ViejoJuli/thesis_code" target="_blank">este repositorio en GitHub</a>.
+                </p>
+            </div>
+        </div>
     </div>
+            <!-- Formulario para ingresar los valores -->
+            <form id="form-params">
+                <label for="months_range">Rango</label>
+                <input type="number" id="months_range" name="months_range" value="{{ default_months }}" min="1" required>
 
-    <!-- Formulario para ingresar los valores -->
-    <form id="form-params">
-        <label for="months_range">Meses</label>
-        <input type="number" id="months_range" name="months_range" value="{{ default_months }}" min="1" required>
+                <label for="discount_rate">Tasa de Interes</label>
+                <input type="number" id="discount_rate" name="discount_rate" step="0.0001" value="{{ default_interest }}"
+                    min="0" required>
 
-        <label for="discount_rate">Tasa de Interes (Anual):</label>
-        <input type="number" id="discount_rate" name="discount_rate" step="0.0001" value="{{ default_interest }}"
-            min="0" required>
+                <label for="betha">Beta:</label>
+                <input type="number" id="betha" name="betha" step="0.0001" value="{{ default_betha }}" required>
 
-        <label for="betha">Betha:</label>
-        <input type="number" id="betha" name="betha" step="0.0001" value="{{ default_betha }}" required>
+                <label for="active_users">Usuarios</label>
+                <input type="number" id="active_users" name="active_users" step="1000" value="{{ default_active_users }}" required>
 
-        <label for="active_users">Usuarios Activos</label>
-        <input type="number" id="active_users" name="active_users" step="1000" value="{{ default_active_users }}" required>
+                <label for="users_that_contact_ratio">Ratio de Uso</label>
+                <input type="number" id="users_that_contact_ratio" name="users_that_contact_ratio" step="0.001" value="{{ default_users_that_contact_ratio }}" required>
 
-        <button type="submit">Update Plot</button>
-    </form>
+                <button type="submit">Actualizar Gráfico</button>
+            </form>
+        </div>
 
-    <!-- Contenedor del gráfico -->
-    <div id="plotly-chart"></div>
-
-    <!-- Campo donde se mostrará el costo actualizado -->
-    <p id="cost-prompt-gpt4">Costo actualizado por sesión: {{ default_cost_prompt_gpt4_cop }}</p>
+        <!-- Contenedor del gráfico -->
+        <div class="right-panel">
+            <div id="plotly-chart"></div>
+            <p id="cost-prompt-gpt4">Costo por sesión GPT4: {{ default_cost_prompt_gpt4_cop }} COP</p>
+            <p id="cost-prompt-gpt3">Costo por sesión GPT3.5 Turbo: {{ default_cost_prompt_gpt3_cop }} COP</p>
+        </div>
+    </div>
 
     <!-- JavaScript para manejar el envío del formulario y actualizar el gráfico -->
     <script>
@@ -53,6 +77,7 @@
             const discountRate = document.getElementById('discount_rate').value;
             const betha = document.getElementById('betha').value;
             const active_users = document.getElementById('active_users').value;
+            const users_that_contact_ratio = document.getElementById('users_that_contact_ratio').value;
 
             // Enviar los datos mediante Fetch al servidor
             fetch('/update_plot', {
@@ -60,7 +85,7 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `months_range=${monthsRange}&discount_rate=${discountRate}&betha=${betha}&active_users=${active_users}`
+                body: `months_range=${monthsRange}&discount_rate=${discountRate}&betha=${betha}&active_users=${active_users}&users_that_contact_ratio=${users_that_contact_ratio}`
             })
             .then(response => response.json())  // Parsear el JSON de la respuesta
             .then(data => {
@@ -70,7 +95,8 @@
                 Plotly.react('plotly-chart', graph.data, graph.layout);
 
                 // Actualizar el costo de GPT-4 (COP) en la página
-                document.getElementById('cost-prompt-gpt4').textContent = `Costo actualizado: ${data.updated_cost.toFixed(2)} COP`;
+                document.getElementById('cost-prompt-gpt4').textContent = `Costo actualizado por sesión GPT4: ${data.updated_cost_gpt4.toFixed(2)} COP`;
+                document.getElementById('cost-prompt-gpt3').textContent = `Costo actualizado por sesión GPT3.5 Turbo: ${data.updated_cost_gpt3.toFixed(2)} COP`;
             })
             .catch(error => {
                 console.error('Error al actualizar el gráfico:', error);

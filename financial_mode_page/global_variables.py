@@ -23,8 +23,9 @@ def get_active_users():
     global active_users
     return active_users
 
+
 contacts_per_month = 9345
-dolar = 4300  # Remember to change to 3900
+dolar = 4100
 num_tokens_input = 800
 num_tokens_output = 100
 avg_interactions_per_contact = 5
@@ -46,8 +47,9 @@ def get_cost_prompt_gpt4_cop():
 
 cost_prompt_gpt3_usd = (num_tokens_input * gpt3_in_token) + \
     (num_tokens_output * gpt3_out_token)
-cost_prompt_gpt3_cop = cost_prompt_gpt3_usd * \
-    dolar * avg_interactions_per_contact * alpha_gpt3
+
+def get_cost_prompt_gpt3_cop():
+    return cost_prompt_gpt3_usd * dolar * avg_interactions_per_contact * alpha_gpt3 * betha
 
 
 # Callcenter Variables - Use getters for calculated values
@@ -100,7 +102,13 @@ salary_growth = 0.10
 cloud_storage_costs_growth = 0.1060
 cloud_processing_costs_decline = 0.15
 api_costs_growth = 0.05
-users_that_contact_ratio = 0.0076
+
+users_that_contact_ratio = 0.008
+
+def get_users_that_contact_ratio():
+    global users_that_contact_ratio
+    return users_that_contact_ratio
+
 avg_contacts_per_user = 2.07
 
 
