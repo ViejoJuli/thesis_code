@@ -29,11 +29,42 @@ financial_mode_page/ ├── static/ │ └── styles.css # Estilos para l
 ## Instalación
 
 1. Clona este repositorio:
-   ```bash
-   git clone https://github.com/ViejoJuli/thesis_code.git
-   cd thesis_code/financial_mode_page
-Crea un entorno virtual (opcional pero recomendado):
+```bash
+git clone https://github.com/ViejoJuli/thesis_code.git
+cd thesis_code/financial_mode_page
+```
 
-bash
+2.Crea un entorno virtual (opcional pero recomendado):
+```bash
 python -m venv venv
 source venv/bin/activate  # En Windows usa `venv\Scripts\activate`
+```
+
+3. Instala las dependencias:
+```bash
+Copy code
+pip install -r requirements.txt
+```
+
+4. Ejecuta la aplicación:
+
+```bash
+Copy code
+python app.py
+```
+
+5. Abre el navegador y accede a http://127.0.0.1:5000.
+
+Las contribuciones son bienvenidas. Si deseas colaborar, por favor sigue estos pasos:
+
+Haz un fork del repositorio.
+Crea una nueva rama (git checkout -b feature/nueva-funcionalidad).
+Realiza tus cambios y haz commit (git commit -m 'Añadir nueva funcionalidad').
+Sube tus cambios (git push origin feature/nueva-funcionalidad).
+Abre un Pull Request.
+Licencia
+Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+
+Agradecimientos
+Plotly por proporcionar la biblioteca de gráficos interactivos.
+Flask por ser un marco ligero y potente para construir aplicaciones web en Python.
